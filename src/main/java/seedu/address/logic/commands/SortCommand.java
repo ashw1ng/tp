@@ -13,6 +13,10 @@ public class SortCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Sorted all persons by name";
 
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Sorts all persons in the address book alphabetically by name.\n"
+            + "Example: " + COMMAND_WORD;
+
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
