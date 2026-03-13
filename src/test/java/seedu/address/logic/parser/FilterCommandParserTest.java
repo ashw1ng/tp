@@ -33,6 +33,12 @@ public class FilterCommandParserTest {
     }
 
     @Test
+    public void parse_preamblePresent_throwsParseException() {
+        assertParseFailure(parser, " preamble t/friends",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_validArgs_returnsFilterCommand() {
         FilterCommand expectedFilterCommand =
                 new FilterCommand(new TagContainsKeywordsPredicate(Arrays.asList("friends", "owesMoney")));

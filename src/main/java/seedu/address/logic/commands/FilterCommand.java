@@ -2,6 +2,8 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Objects;
+
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
@@ -23,6 +25,13 @@ public class FilterCommand extends Command {
 
     private final TagContainsKeywordsPredicate predicate;
 
+    /**
+     * Creates a {@code FilterCommand} that filters the person list using the given
+     * {@link TagContainsKeywordsPredicate}.
+     *
+     * @param predicate predicate to apply when filtering persons by tag
+     * @throws NullPointerException if {@code predicate} is {@code null}
+     */
     public FilterCommand(TagContainsKeywordsPredicate predicate) {
         requireNonNull(predicate);
         this.predicate = predicate;
@@ -48,6 +57,11 @@ public class FilterCommand extends Command {
 
         FilterCommand otherFilterCommand = (FilterCommand) other;
         return predicate.equals(otherFilterCommand.predicate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(predicate);
     }
 
     @Override

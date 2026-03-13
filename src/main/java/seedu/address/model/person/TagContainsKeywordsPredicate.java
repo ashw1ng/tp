@@ -15,6 +15,11 @@ import seedu.address.commons.util.ToStringBuilder;
 public class TagContainsKeywordsPredicate implements Predicate<Person> {
     private final List<String> keywords;
 
+    /**
+     * Creates a {@code TagContainsKeywordsPredicate} with the given list of tag keywords.
+     *
+     * @param keywords list of tag keywords used to test whether a person's tags match
+     */
     public TagContainsKeywordsPredicate(List<String> keywords) {
         requireNonNull(keywords);
         this.keywords = new ArrayList<>(keywords);
