@@ -20,6 +20,12 @@ checkstyle {
     toolVersion = '11.0.0'
 }
 
+tasks.register('checkstyle') {
+    group = 'verification'
+    description = 'Runs Checkstyle for main and test source sets.'
+    dependsOn tasks.named('checkstyleMain'), tasks.named('checkstyleTest')
+}
+
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
