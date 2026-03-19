@@ -159,6 +159,32 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Starred contacts feature
+
+The starred contacts feature adds a `starred` boolean state to `Person`, with the following behavior:
+
+1. `star INDEX` marks the person at the displayed index as starred.
+2. `unstar INDEX` removes the starred state from the person at the displayed index.
+3. Repeating `star` on an already-starred person (or `unstar` on an already-unstarred person) is handled as an informative no-op.
+
+#### Model and ordering
+
+- `Person` stores `starred` as a data field (default `false`).
+- `Person#isSamePerson` is unchanged (identity remains name-based).
+- Full object equality/hash semantics include `starred`.
+- `AddressBook` enforces starred-first ordering after person-list mutations.
+- Within the starred and unstarred groups, relative order is preserved.
+
+#### Storage
+
+- `JsonAdaptedPerson` persists the `starred` field.
+- Backward compatibility is preserved by treating missing `starred` values in legacy JSON files as `false`.
+
+#### UI
+
+- `PersonCard` renders a subtle star marker for starred contacts.
+- The marker is hidden for unstarred contacts to keep the layout compact.
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

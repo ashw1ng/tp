@@ -26,6 +26,7 @@
           </minWidth>
         </Label>
         <Label fx:id="name" text="\$first" styleClass="cell_big_label" />
+        <Label fx:id="starredIndicator" styleClass="cell_starred_label" text="?" visible="false" managed="false" />
       </HBox>
       <FlowPane fx:id="tags" />
       <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" />
@@ -35,3 +36,4 @@
     </VBox>
   </GridPane>
 </HBox>
+

@@ -28,9 +28,10 @@ class JsonAdaptedPerson {
     private final String name;
     private final String phone;
     private final String email;
-    private final String address;
+    private final String address; // may be null (optional field)
     private final String remark;
     private final Boolean archived;
+    private final Boolean starred;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
     /**
@@ -41,16 +42,42 @@ class JsonAdaptedPerson {
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("remark") String remark,
             @JsonProperty("archived") Boolean archived,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags,
+            @JsonProperty("starred") Boolean starred) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.remark = remark != null ? remark : "";
         this.archived = archived;
+        this.starred = starred;
         if (tags != null) {
             this.tags.addAll(tags);
         }
+    }
+
+    /**
+     * Constructs a {@code JsonAdaptedPerson} without an explicit starred field.
+     */
+    public JsonAdaptedPerson(String name, String phone, String email, String address,
+            String remark, List<JsonAdaptedTag> tags) {
+        this(name, phone, email, address, remark, null, tags, null);
+    }
+
+    /**
+     * Constructs a {@code JsonAdaptedPerson} with explicit archived state and no explicit starred field.
+     */
+    public JsonAdaptedPerson(String name, String phone, String email, String address,
+            String remark, Boolean archived, List<JsonAdaptedTag> tags) {
+        this(name, phone, email, address, remark, archived, tags, null);
+    }
+
+    /**
+     * Constructs a {@code JsonAdaptedPerson} with explicit starred state and no explicit archived field.
+     */
+    public JsonAdaptedPerson(String name, String phone, String email, String address,
+            String remark, List<JsonAdaptedTag> tags, Boolean starred) {
+        this(name, phone, email, address, remark, null, tags, starred);
     }
 
     /**
@@ -60,9 +87,10 @@ class JsonAdaptedPerson {
         name = source.getName().fullName;
         phone = source.getPhone().value;
         email = source.getEmail().value;
-        address = source.getAddress().value;
+        address = source.hasAddress() ? source.getAddress().value : null;
         remark = source.getRemark().value;
         archived = source.isArchived();
+        starred = source.isStarred();
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -103,19 +131,22 @@ class JsonAdaptedPerson {
         }
         final Email modelEmail = new Email(email);
 
-        if (address == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName()));
+        // Address is optional; null means not provided
+        Address modelAddress = null;
+        if (address != null) {
+            if (!Address.isValidAddress(address)) {
+                throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
+            }
+            modelAddress = new Address(address);
         }
-        if (!Address.isValidAddress(address)) {
-            throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
-        }
-        final Address modelAddress = new Address(address);
 
         final Remark modelRemark = new Remark(remark);
         final boolean modelArchived = Boolean.TRUE.equals(archived);
+        final boolean modelStarred = Boolean.TRUE.equals(starred);
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelRemark, modelArchived, modelTags);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress,
+            modelRemark, modelArchived, modelTags, modelStarred);
     }
 
 }

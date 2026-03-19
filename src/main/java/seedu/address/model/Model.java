@@ -88,7 +88,7 @@ public interface Model {
     void updateFilteredPersonList(Predicate<Person> predicate);
 
     /**
-     * Sorts all persons in the address book alphabetically by name.
+     * Sorts all persons in the address book with starred contacts first, then alphabetically by name.
      */
     void sortPersons();
 }

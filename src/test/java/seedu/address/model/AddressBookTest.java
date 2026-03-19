@@ -7,6 +7,8 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.BENSON;
+import static seedu.address.testutil.TypicalPersons.CARL;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
@@ -76,6 +78,36 @@ public class AddressBookTest {
         Person editedAlice = new PersonBuilder(ALICE).withAddress(VALID_ADDRESS_BOB).withTags(VALID_TAG_HUSBAND)
                 .build();
         assertTrue(addressBook.hasPerson(editedAlice));
+    }
+
+    @Test
+    public void addPerson_starredPersonMovesBeforeUnstarred() {
+        Person unstarredAlice = new PersonBuilder(ALICE).withStarred(false).build();
+        Person unstarredBenson = new PersonBuilder(BENSON).withStarred(false).build();
+        Person starredCarl = new PersonBuilder(CARL).withStarred(true).build();
+
+        addressBook.addPerson(unstarredAlice);
+        addressBook.addPerson(unstarredBenson);
+        addressBook.addPerson(starredCarl);
+
+        assertEquals(starredCarl, addressBook.getPersonList().get(0));
+        assertEquals(unstarredAlice, addressBook.getPersonList().get(1));
+        assertEquals(unstarredBenson, addressBook.getPersonList().get(2));
+    }
+
+    @Test
+    public void setPerson_starringContactReordersList() {
+        Person unstarredAlice = new PersonBuilder(ALICE).withStarred(false).build();
+        Person unstarredBenson = new PersonBuilder(BENSON).withStarred(false).build();
+        Person starredBenson = new PersonBuilder(BENSON).withStarred(true).build();
+
+        addressBook.addPerson(unstarredAlice);
+        addressBook.addPerson(unstarredBenson);
+
+        addressBook.setPerson(unstarredBenson, starredBenson);
+
+        assertEquals(starredBenson, addressBook.getPersonList().get(0));
+        assertEquals(unstarredAlice, addressBook.getPersonList().get(1));
     }
 
     @Test

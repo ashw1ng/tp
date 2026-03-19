@@ -26,7 +26,9 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.RemarkCommand;
 import seedu.address.logic.commands.SortCommand;
+import seedu.address.logic.commands.StarCommand;
 import seedu.address.logic.commands.UnarchiveCommand;
+import seedu.address.logic.commands.UnstarCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
@@ -161,6 +163,26 @@ public class AddressBookParserTest {
     public void parseCommand_sort() throws Exception {
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD) instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " 3") instanceof SortCommand);
+    }
+
+    /**
+     * Verifies parsing of {@code star} commands.
+     */
+    @Test
+    public void parseCommand_star() throws Exception {
+        StarCommand command = (StarCommand) parser.parseCommand(
+                StarCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+        assertEquals(new StarCommand(INDEX_FIRST_PERSON), command);
+    }
+
+    /**
+     * Verifies parsing of {@code unstar} commands.
+     */
+    @Test
+    public void parseCommand_unstar() throws Exception {
+        UnstarCommand command = (UnstarCommand) parser.parseCommand(
+                UnstarCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+        assertEquals(new UnstarCommand(INDEX_FIRST_PERSON), command);
     }
 
     /**

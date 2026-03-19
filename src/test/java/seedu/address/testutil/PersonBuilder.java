@@ -30,6 +30,7 @@ public class PersonBuilder {
     private Remark remark;
     private boolean isArchived;
     private Set<Tag> tags;
+    private boolean starred;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -42,6 +43,7 @@ public class PersonBuilder {
         remark = new Remark(DEFAULT_REMARK);
         isArchived = false;
         tags = new HashSet<>();
+        starred = false;
     }
 
     /**
@@ -55,6 +57,7 @@ public class PersonBuilder {
         remark = personToCopy.getRemark();
         isArchived = personToCopy.isArchived();
         tags = new HashSet<>(personToCopy.getTags());
+        starred = personToCopy.isStarred();
     }
 
     /**
@@ -68,7 +71,7 @@ public class PersonBuilder {
     /**
      * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Person} that we are building.
      */
-    public PersonBuilder withTags(String ... tags) {
+    public PersonBuilder withTags(String... tags) {
         this.tags = SampleDataUtil.getTagSet(tags);
         return this;
     }
@@ -78,6 +81,14 @@ public class PersonBuilder {
      */
     public PersonBuilder withAddress(String address) {
         this.address = new Address(address);
+        return this;
+    }
+
+    /**
+     * Clears the address so the built {@code Person} has no address set.
+     */
+    public PersonBuilder withNoAddress() {
+        this.address = null;
         return this;
     }
 
@@ -105,14 +116,23 @@ public class PersonBuilder {
         return this;
     }
 
-    /** Sets the archived state of the person being built. */
+    /**
+     * Sets whether the {@code Person} that we are building is archived.
+     */
     public PersonBuilder withArchived(boolean isArchived) {
         this.isArchived = isArchived;
         return this;
     }
 
-    public Person build() {
-        return new Person(name, phone, email, address, remark, isArchived, tags);
+    /**
+     * Sets whether the {@code Person} that we are building is starred.
+     */
+    public PersonBuilder withStarred(boolean starred) {
+        this.starred = starred;
+        return this;
     }
 
+    public Person build() {
+        return new Person(name, phone, email, address, remark, isArchived, tags, starred);
+    }
 }

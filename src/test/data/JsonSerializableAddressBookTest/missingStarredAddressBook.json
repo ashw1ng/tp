@@ -1,0 +1,13 @@
+{
+    "_comment": "Legacy AddressBook save file without the starred field",
+    "persons": [
+        {
+            "name": "Legacy Person",
+            "phone": "91234567",
+            "email": "legacy@example.com",
+            "address": "123 Legacy Street",
+            "remark": "",
+            "tags": ["friends"]
+        }
+    ]
+}

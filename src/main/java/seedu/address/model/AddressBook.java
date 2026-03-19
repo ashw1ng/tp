@@ -2,6 +2,7 @@ package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void setPersons(List<Person> persons) {
         this.persons.setPersons(persons);
+        enforceStarredFirstOrder();
     }
 
     /**
@@ -66,6 +68,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void addPerson(Person p) {
         persons.add(p);
+        enforceStarredFirstOrder();
     }
 
     /**
@@ -79,6 +82,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(editedPerson);
 
         persons.setPerson(target, editedPerson);
+        enforceStarredFirstOrder();
     }
 
     /**
@@ -90,10 +94,32 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Sorts the address book's person list alphabetically by name.
+        * Sorts the address book's person list with starred contacts first, then alphabetically by name.
      */
     public void sortPersons() {
-        persons.sort(Comparator.comparing(p -> p.getName().fullName, String.CASE_INSENSITIVE_ORDER));
+        persons.sort(Comparator
+                .comparing(Person::isStarred).reversed()
+                .thenComparing(p -> p.getName().fullName, String.CASE_INSENSITIVE_ORDER));
+    }
+
+    /**
+     * Keeps starred contacts before unstarred contacts while preserving relative order within each group.
+     */
+    private void enforceStarredFirstOrder() {
+        List<Person> starredPersons = new ArrayList<>();
+        List<Person> unstarredPersons = new ArrayList<>();
+        for (Person person : persons.asUnmodifiableObservableList()) {
+            if (person.isStarred()) {
+                starredPersons.add(person);
+            } else {
+                unstarredPersons.add(person);
+            }
+        }
+
+        List<Person> reorderedPersons = new ArrayList<>(starredPersons.size() + unstarredPersons.size());
+        reorderedPersons.addAll(starredPersons);
+        reorderedPersons.addAll(unstarredPersons);
+        persons.setPersons(reorderedPersons);
     }
 
     //// util methods
