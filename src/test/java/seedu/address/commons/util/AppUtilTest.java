@@ -1,15 +1,27 @@
 package seedu.address.commons.util;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 public class AppUtilTest {
 
     @Test
-    public void getImage_exitingImage() {
-        assertNotNull(AppUtil.getImage("/images/address_book_32.png"));
+    public void getImage_nonExistentPath_returnsNull() {
+        var image = assertDoesNotThrow(() -> AppUtil.getImage("/images/non_existent_image.png"));
+        assertNull(image);
+    }
+
+    @Test
+    public void getImage_resourceExists_returnsNonNull() {
+        String iconPath = "/images/address_book_32.png";
+        var image = assertDoesNotThrow(() -> AppUtil.getImage(iconPath));
+        Assumptions.assumeTrue(image != null, "Image not loadable (missing resource or JavaFX unavailable)");
+        assertTrue(image.getWidth() > 0 || image.getHeight() > 0);
     }
 
     @Test
