@@ -1,12 +1,13 @@
 package seedu.address.logic.commands;
 
-import java.util.Objects;
 import static java.util.Objects.requireNonNull;
+import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
+
+import java.util.Objects;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
-import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 import seedu.address.model.person.TagContainsKeywordsPredicate;
 
 /**
