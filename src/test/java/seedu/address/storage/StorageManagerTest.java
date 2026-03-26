@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,8 @@ public class StorageManagerTest {
     public void setUp() {
         JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(getTempFilePath("ab"));
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(getTempFilePath("prefs"));
-        storageManager = new StorageManager(addressBookStorage, userPrefsStorage);
+        JsonAliasStorage aliasStorage = new JsonAliasStorage(getTempFilePath("aliases"));
+        storageManager = new StorageManager(addressBookStorage, userPrefsStorage, aliasStorage);
     }
 
     private Path getTempFilePath(String fileName) {
@@ -63,6 +66,23 @@ public class StorageManagerTest {
     @Test
     public void getAddressBookFilePath() {
         assertNotNull(storageManager.getAddressBookFilePath());
+    }
+
+    @Test
+    public void aliasReadSave() throws Exception {
+        /*
+         * Note: This is an integration test that verifies the StorageManager is properly wired to the
+         * {@link JsonAliasStorage} class.
+         * More extensive testing of alias saving/reading is done in {@link JsonAliasStorageTest} class.
+         */
+        Map<String, String> aliases = new HashMap<>();
+        aliases.put("ls", "list");
+        aliases.put("a", "add");
+
+        storageManager.saveAliases(aliases);
+        Map<String, String> retrieved = storageManager.readAliases()
+                .orElseThrow(() -> new AssertionError("Aliases file should exist after save"));
+        assertEquals(aliases, retrieved);
     }
 
 }

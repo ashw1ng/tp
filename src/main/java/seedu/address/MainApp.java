@@ -15,6 +15,7 @@ import seedu.address.commons.util.ConfigUtil;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.Logic;
 import seedu.address.logic.LogicManager;
+import seedu.address.logic.commands.AliasCommand;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -23,7 +24,9 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.AddressBookStorage;
+import seedu.address.storage.AliasStorage;
 import seedu.address.storage.JsonAddressBookStorage;
+import seedu.address.storage.JsonAliasStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.Storage;
 import seedu.address.storage.StorageManager;
@@ -58,9 +61,13 @@ public class MainApp extends Application {
         UserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(config.getUserPrefsFilePath());
         UserPrefs userPrefs = initPrefs(userPrefsStorage);
         AddressBookStorage addressBookStorage = new JsonAddressBookStorage(userPrefs.getAddressBookFilePath());
-        storage = new StorageManager(addressBookStorage, userPrefsStorage);
+        AliasStorage aliasStorage = new JsonAliasStorage(
+                userPrefs.getAddressBookFilePath().resolveSibling("aliases.json"));
+        storage = new StorageManager(addressBookStorage, userPrefsStorage, aliasStorage);
 
         model = initModelManager(storage, userPrefs);
+
+        initAliases(storage);
 
         logic = new LogicManager(model, storage);
 
@@ -95,6 +102,16 @@ public class MainApp extends Application {
 
     private void initLogging(Config config) {
         LogsCenter.init(config);
+    }
+
+    private void initAliases(Storage storage) {
+        logger.info("Attempting to load aliases from storage");
+        try {
+            storage.readAliases().ifPresent(aliases ->
+                    AliasCommand.getAliasRegistry().loadAliases(aliases, AliasCommand.RESERVED_COMMAND_WORDS));
+        } catch (DataLoadingException e) {
+            logger.warning("Failed to load aliases from disk: " + e.getMessage());
+        }
     }
 
     /**

@@ -2,6 +2,8 @@ package seedu.address.storage;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -17,15 +19,21 @@ import seedu.address.model.UserPrefs;
 public class StorageManager implements Storage {
 
     private static final Logger logger = LogsCenter.getLogger(StorageManager.class);
-    private AddressBookStorage addressBookStorage;
-    private UserPrefsStorage userPrefsStorage;
+    private final AddressBookStorage addressBookStorage;
+    private final UserPrefsStorage userPrefsStorage;
+    private final AliasStorage aliasStorage;
 
     /**
-     * Creates a {@code StorageManager} with the given {@code AddressBookStorage} and {@code UserPrefStorage}.
+     * Creates a {@code StorageManager} with the given storages.
      */
-    public StorageManager(AddressBookStorage addressBookStorage, UserPrefsStorage userPrefsStorage) {
+    public StorageManager(AddressBookStorage addressBookStorage, UserPrefsStorage userPrefsStorage,
+            AliasStorage aliasStorage) {
+        Objects.requireNonNull(addressBookStorage);
+        Objects.requireNonNull(userPrefsStorage);
+        Objects.requireNonNull(aliasStorage);
         this.addressBookStorage = addressBookStorage;
         this.userPrefsStorage = userPrefsStorage;
+        this.aliasStorage = aliasStorage;
     }
 
     // ================ UserPrefs methods ==============================
@@ -73,6 +81,20 @@ public class StorageManager implements Storage {
     public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
         logger.fine("Attempting to write to data file: " + filePath);
         addressBookStorage.saveAddressBook(addressBook, filePath);
+    }
+
+    // ================ AliasStorage methods ==============================
+
+    @Override
+    public Optional<Map<String, String>> readAliases() throws DataLoadingException {
+        logger.fine("Attempting to read aliases from file");
+        return aliasStorage.readAliases();
+    }
+
+    @Override
+    public void saveAliases(Map<String, String> aliases) throws IOException {
+        logger.fine("Attempting to save aliases to file");
+        aliasStorage.saveAliases(aliases);
     }
 
 }

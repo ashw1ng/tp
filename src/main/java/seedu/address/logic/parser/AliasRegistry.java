@@ -3,11 +3,15 @@ package seedu.address.logic.parser;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
+
+import seedu.address.commons.core.LogsCenter;
 
 /**
  * Registry for command aliases.
  */
 public class AliasRegistry {
+    private static final Logger logger = LogsCenter.getLogger(AliasRegistry.class);
     private final Map<String, String> aliasMap = new HashMap<>();
 
     /**
@@ -51,5 +55,27 @@ public class AliasRegistry {
      */
     public Map<String, String> getAllAliases() {
         return new HashMap<>(aliasMap);
+    }
+
+    /**
+     * Replaces all current aliases with validated entries from the given map.
+     * Entries with blank keys/values or keys that clash with {@code reservedWords} are silently skipped.
+     * If {@code aliases} is null the registry is simply cleared.
+     */
+    public void loadAliases(Map<String, String> aliases, Set<String> reservedWords) {
+        aliasMap.clear();
+        if (aliases == null) {
+            return;
+        }
+        Set<String> reserved = (reservedWords != null) ? reservedWords : Set.of();
+        aliases.forEach((alias, command) -> {
+            if (alias != null && !alias.isBlank()
+                    && command != null && !command.isBlank()
+                    && !reserved.contains(alias)) {
+                aliasMap.put(alias, command);
+            } else {
+                logger.fine("Skipped invalid or reserved alias during load: " + alias);
+            }
+        });
     }
 }
