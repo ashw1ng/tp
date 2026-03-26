@@ -1,0 +1,60 @@
+---
+layout: default
+---
+
+<div class="page-with-sidebar">
+  <nav class="sidebar-toc" id="sidebar-toc" aria-label="Page contents">
+    <p class="sidebar-toc-title">On this page</p>
+    <ul id="toc-list"></ul>
+  </nav>
+
+  <article class="post sidebar-main-content">
+    <header class="post-header">
+      <h1 class="post-title">{{ page.title | escape }}</h1>
+    </header>
+
+    <div class="post-content">{{ content }}</div>
+  </article>
+</div>
+
+<script>
+  (function () {
+    var headings = document.querySelectorAll('.post-content h2, .post-content h3');
+    var tocList = document.getElementById('toc-list');
+
+    headings.forEach(function (h) {
+      var li = document.createElement('li');
+      li.className = 'toc-entry toc-' + h.tagName.toLowerCase();
+
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      // Strip any trailing "↑ Back to …" text that may appear in heading text nodes
+      a.textContent = h.textContent.replace(/\s*↑.*$/u, '').trim();
+
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    // Highlight the sidebar link for the heading currently closest to the top
+    var links = Array.from(tocList.querySelectorAll('a'));
+
+    function setActive() {
+      var scrollY = window.scrollY + 80; // offset so highlight fires a bit early
+      var current = null;
+      headings.forEach(function (h) {
+        if (h.offsetTop <= scrollY) {
+          current = h;
+        }
+      });
+      links.forEach(function (link) {
+        link.classList.toggle(
+          'toc-active',
+          current !== null && link.getAttribute('href') === '#' + current.id,
+        );
+      });
+    }
+
+    window.addEventListener('scroll', setActive, { passive: true });
+    setActive();
+  })();
+</script>

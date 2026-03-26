@@ -10,3 +10,82 @@
   height: 21px;
   width: 21px;
 }
+
+/* ===== Sidebar TOC ===== */
+
+.page-with-sidebar {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.sidebar-toc {
+  position: sticky;
+  top: 1.5rem;
+  width: 220px;
+  flex-shrink: 0;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  border-left: 3px solid #e0e0e0;
+  padding-left: 1rem;
+  font-size: 0.83rem;
+  line-height: 1.4;
+
+  .sidebar-toc-title {
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #888;
+    margin: 0 0 0.6rem 0;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-entry {
+    margin: 0.2rem 0;
+
+    a {
+      display: block;
+      color: #555;
+      text-decoration: none;
+      padding: 1px 0;
+
+      &:hover { color: #111; }
+    }
+
+    a.toc-active {
+      color: #1a6ed8;
+      font-weight: 600;
+    }
+  }
+
+  .toc-h3 {
+    padding-left: 0.9rem;
+  }
+}
+
+.sidebar-main-content {
+  flex: 1;
+  min-width: 0; // prevent flex child overflow
+}
+
+@media (max-width: 820px) {
+  .page-with-sidebar {
+    flex-direction: column;
+  }
+
+  .sidebar-toc {
+    position: static;
+    width: 100%;
+    max-height: none;
+    border-left: none;
+    border-bottom: 2px solid #e0e0e0;
+    padding: 0 0 1rem 0;
+    margin-bottom: 1.5rem;
+  }
+}
