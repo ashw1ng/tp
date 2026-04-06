@@ -14,8 +14,8 @@ import seedu.address.model.person.Person;
  * Panel containing the list of persons.
  */
 public class PersonListPanel extends UiPart<Region> {
-    private static final String FXML = "PersonListPanel.fxml";
     static final double LIST_VIEW_WIDTH_ALLOWANCE = 18; // Accounts for the list view scrollbar width.
+    private static final String FXML = "PersonListPanel.fxml";
 
     @FXML
     private ListView<Person> personListView;
