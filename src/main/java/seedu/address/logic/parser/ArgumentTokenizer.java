@@ -89,6 +89,13 @@ public class ArgumentTokenizer {
         // Sort by start position
         prefixPositions.sort((prefix1, prefix2) -> prefix1.getStartPosition() - prefix2.getStartPosition());
 
+        // Internal invariant: after sorting, prefix positions should be non-decreasing.
+        // Uses Java assertions (disabled by default unless enabled with -ea).
+        for (int i = 1; i < prefixPositions.size(); i++) {
+            assert prefixPositions.get(i - 1).getStartPosition() <= prefixPositions.get(i).getStartPosition()
+                    : "Prefix positions must be sorted by start position";
+        }
+
         // Insert a PrefixPosition to represent the preamble
         PrefixPosition preambleMarker = new PrefixPosition(new Prefix(""), 0);
         prefixPositions.add(0, preambleMarker);
@@ -100,6 +107,8 @@ public class ArgumentTokenizer {
         // Map prefixes to their argument values (if any)
         ArgumentMultimap argMultimap = new ArgumentMultimap();
         for (int i = 0; i < prefixPositions.size() - 1; i++) {
+            assert prefixPositions.get(i).getStartPosition() <= prefixPositions.get(i + 1).getStartPosition()
+                    : "Prefix positions must be non-decreasing to extract argument values safely";
             // Extract and store prefixes and their arguments
             Prefix argPrefix = prefixPositions.get(i).getPrefix();
             String argValue = extractArgumentValue(argsString, prefixPositions.get(i), prefixPositions.get(i + 1));
