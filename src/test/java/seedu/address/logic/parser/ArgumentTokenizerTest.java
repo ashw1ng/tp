@@ -149,7 +149,7 @@ public class ArgumentTokenizerTest {
         assertNotEquals(aaa, "aaa");
         assertNotEquals(aaa, new Prefix("aab"));
     }
-    
+
     @Test
     public void isNonDecreasingPositions_emptyList_returnsTrue() {
         // Vacuously true: no decreasing pair exists in an empty sequence.
