@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -62,5 +63,67 @@ public class AliasCommandTest {
         AliasCommand listCmd = new AliasCommand("list", null, null);
         CommandResult result = listCmd.execute(model);
         assertTrue(result.getFeedbackToUser().contains("lc -> list"), "expected alias listing to contain 'lc -> list'");
+    }
+
+    @Test
+    public void execute_listAlias_empty() throws Exception {
+        AliasCommand listCmd = new AliasCommand("list", null, null);
+        CommandResult result = listCmd.execute(model);
+        assertTrue(result.getFeedbackToUser().contains("(none)"));
+    }
+
+    @Test
+    public void execute_addAliasDuplicate_throwsCommandException() throws Exception {
+        AliasCommand cmd = new AliasCommand("add", "lc", "list");
+        cmd.execute(model);
+        AliasCommand duplicate = new AliasCommand("add", "lc", "find");
+        CommandException exception = assertThrows(CommandException.class, () -> duplicate.execute(model));
+        assertEquals(String.format(AliasCommand.MESSAGE_ADD_CONFLICT, "lc"), exception.getMessage());
+    }
+
+    @Test
+    public void execute_invalidAction_throwsCommandException() {
+        AliasCommand cmd = new AliasCommand("unknown", null, null);
+        assertThrows(CommandException.class, () -> cmd.execute(model));
+    }
+
+    @Test
+    public void execute_removeAliasFail_correctMessage() {
+        AliasCommand removeCmd = new AliasCommand("remove", "notfound", null);
+        CommandException exception = assertThrows(CommandException.class, () -> removeCmd.execute(model));
+        assertEquals(String.format(AliasCommand.MESSAGE_REMOVE_FAIL, "notfound"), exception.getMessage());
+    }
+
+    @Test
+    public void equals_sameObject_returnsTrue() {
+        AliasCommand cmd = new AliasCommand("add", "lc", "list");
+        assertTrue(cmd.equals(cmd));
+    }
+
+    @Test
+    public void equals_equalObjects_returnsTrue() {
+        AliasCommand cmd1 = new AliasCommand("add", "lc", "list");
+        AliasCommand cmd2 = new AliasCommand("add", "lc", "list");
+        assertTrue(cmd1.equals(cmd2));
+    }
+
+    @Test
+    public void equals_differentFields_returnsFalse() {
+        AliasCommand cmd1 = new AliasCommand("add", "lc", "list");
+        AliasCommand cmd2 = new AliasCommand("add", "lc", "find");
+        assertFalse(cmd1.equals(cmd2));
+    }
+
+    @Test
+    public void equals_notAliasCommand_returnsFalse() {
+        AliasCommand cmd = new AliasCommand("add", "lc", "list");
+        assertFalse(cmd.equals("not an AliasCommand"));
+    }
+
+    @Test
+    public void hashCode_equalObjects_sameHash() {
+        AliasCommand cmd1 = new AliasCommand("add", "lc", "list");
+        AliasCommand cmd2 = new AliasCommand("add", "lc", "list");
+        assertEquals(cmd1.hashCode(), cmd2.hashCode());
     }
 }
