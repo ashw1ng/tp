@@ -3,6 +3,7 @@ package seedu.address.storage;
 import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +72,13 @@ public class JsonPingBookStorage implements AddressBookStorage, AliasStorage {
     public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
         requireNonNull(addressBook);
         requireNonNull(filePath);
-        Map<String, String> existingAliases = loadExistingAliases(filePath);
+        Map<String, String> existingAliases;
+        try {
+            existingAliases = loadExistingAliases(filePath);
+        } catch (DataLoadingException e) {
+            throw new IOException("Malformed data file at " + filePath
+                    + "; aborting save to prevent alias loss: " + e.getMessage(), e);
+        }
         FileUtil.createIfMissing(filePath);
         JsonUtil.saveJsonFile(new JsonSerializablePingBook(addressBook, existingAliases), filePath);
     }
@@ -98,9 +105,14 @@ public class JsonPingBookStorage implements AddressBookStorage, AliasStorage {
     public void saveAliases(Map<String, String> aliases) throws IOException {
         requireNonNull(aliases);
         Optional<ReadOnlyAddressBook> existingAb;
-        try {
-            existingAb = readAddressBook(filePath);
-        } catch (DataLoadingException e) {
+        if (Files.exists(filePath)) {
+            try {
+                existingAb = readAddressBook(filePath);
+            } catch (DataLoadingException e) {
+                throw new IOException("Malformed data file at " + filePath
+                        + "; aborting save to prevent data loss: " + e.getMessage(), e);
+            }
+        } else {
             existingAb = Optional.empty();
         }
         ReadOnlyAddressBook ab = existingAb.orElseGet(seedu.address.model.AddressBook::new);
@@ -120,14 +132,10 @@ public class JsonPingBookStorage implements AddressBookStorage, AliasStorage {
         JsonUtil.saveJsonFile(new JsonSerializablePingBook(addressBook, aliases), filePath);
     }
 
-    private Map<String, String> loadExistingAliases(Path filePath) {
-        try {
-            Optional<JsonSerializablePingBook> existing =
-                    JsonUtil.readJsonFile(filePath, JsonSerializablePingBook.class);
-            return existing.map(JsonSerializablePingBook::getAliases).orElseGet(HashMap::new);
-        } catch (DataLoadingException e) {
-            return new HashMap<>();
-        }
+    private Map<String, String> loadExistingAliases(Path filePath) throws DataLoadingException {
+        Optional<JsonSerializablePingBook> existing =
+                JsonUtil.readJsonFile(filePath, JsonSerializablePingBook.class);
+        return existing.map(JsonSerializablePingBook::getAliases).orElseGet(HashMap::new);
     }
 
 }

@@ -1,6 +1,7 @@
 package seedu.address.storage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ class JsonSerializablePingBook {
      */
     public JsonSerializablePingBook(ReadOnlyAddressBook source, Map<String, String> aliases) {
         persons.addAll(source.getPersonList().stream().map(JsonAdaptedPerson::new).collect(Collectors.toList()));
-        this.aliases = new HashMap<>(aliases);
+        this.aliases = new HashMap<>(aliases == null ? Collections.emptyMap() : aliases);
     }
 
     public Map<String, String> getAliases() {

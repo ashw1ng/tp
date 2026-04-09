@@ -120,7 +120,8 @@ public class StorageManager implements Storage {
         Path aliasPath = aliasStorage.getAliasesFilePath();
 
         // When both storages share the same file (e.g. JsonPingBookStorage), do a single atomic write.
-        if (abPath.equals(aliasPath) && addressBookStorage instanceof JsonPingBookStorage) {
+        if (abPath.equals(aliasPath) && addressBookStorage instanceof JsonPingBookStorage
+                && aliasStorage instanceof JsonPingBookStorage) {
             JsonPingBookStorage combined = (JsonPingBookStorage) addressBookStorage;
             Path backupPath = abPath.resolveSibling(abPath.getFileName().toString() + ".bak");
             boolean hadExisting = Files.exists(abPath);

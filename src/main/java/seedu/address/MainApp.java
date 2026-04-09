@@ -24,6 +24,7 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.AliasStorage;
+import seedu.address.storage.JsonAliasStorage;
 import seedu.address.storage.JsonPingBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.Storage;
@@ -63,7 +64,8 @@ public class MainApp extends Application {
 
         model = initModelManager(storage, userPrefs);
 
-        initAliases(pingBookStorage);
+        Path legacyAliasPath = userPrefs.getAddressBookFilePath().getParent().resolve("aliases.json");
+        initAliases(pingBookStorage, new JsonAliasStorage(legacyAliasPath));
 
         logic = new LogicManager(model, storage);
 
@@ -101,10 +103,14 @@ public class MainApp extends Application {
     }
 
     void initAliases(AliasStorage storage) {
+        initAliases(storage, null);
+    }
+
+    void initAliases(AliasStorage primaryStorage, AliasStorage legacyStorage) {
         logger.info("Attempting to load aliases from storage");
         try {
-            Optional<java.util.Map<String, String>> aliasesOptional = storage.readAliases();
-            if (aliasesOptional.isPresent()) {
+            Optional<java.util.Map<String, String>> aliasesOptional = primaryStorage.readAliases();
+            if (aliasesOptional.isPresent() && !aliasesOptional.get().isEmpty()) {
                 seedu.address.logic.parser.AliasRegistry.LoadAliasesResult loadResult =
                         AliasCommand.getAliasRegistry().loadAliases(
                         aliasesOptional.get(), AliasCommand.RESERVED_COMMAND_WORDS);
@@ -116,12 +122,46 @@ public class MainApp extends Application {
                                     .reduce((left, right) -> left + "; " + right)
                                     .orElse(""));
                 }
+            } else if (legacyStorage != null) {
+                tryMigrateFromLegacyAliases(primaryStorage, legacyStorage);
             } else {
                 AliasCommand.getAliasRegistry().clear();
             }
         } catch (DataLoadingException e) {
             AliasCommand.getAliasRegistry().clear();
             logger.warning("Failed to load aliases from disk: " + e.getMessage());
+        }
+    }
+
+    private void tryMigrateFromLegacyAliases(AliasStorage primaryStorage, AliasStorage legacyStorage) {
+        try {
+            Optional<java.util.Map<String, String>> legacyOptional = legacyStorage.readAliases();
+            if (legacyOptional.isPresent() && !legacyOptional.get().isEmpty()) {
+                java.util.Map<String, String> legacyAliases = legacyOptional.get();
+                seedu.address.logic.parser.AliasRegistry.LoadAliasesResult loadResult =
+                        AliasCommand.getAliasRegistry().loadAliases(
+                        legacyAliases, AliasCommand.RESERVED_COMMAND_WORDS);
+                if (loadResult.hasRejectedEntries()) {
+                    logger.warning("Rejected " + loadResult.getRejectedCount()
+                            + " legacy aliases while migrating: "
+                            + loadResult.getRejectedEntries().stream()
+                                    .map(seedu.address.logic.parser.AliasRegistry.RejectedAliasEntry::toLogString)
+                                    .reduce((left, right) -> left + "; " + right)
+                                    .orElse(""));
+                }
+                logger.info("Migrating " + loadResult.getLoadedCount() + " aliases from legacy file");
+                try {
+                    primaryStorage.saveAliases(AliasCommand.getAliasRegistry().getAllAliases());
+                } catch (java.io.IOException saveEx) {
+                    logger.warning("Failed to persist migrated aliases to unified storage: "
+                            + saveEx.getMessage());
+                }
+            } else {
+                AliasCommand.getAliasRegistry().clear();
+            }
+        } catch (DataLoadingException e) {
+            logger.warning("Failed to load legacy aliases for migration: " + e.getMessage());
+            AliasCommand.getAliasRegistry().clear();
         }
     }
 
