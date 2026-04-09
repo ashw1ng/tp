@@ -1,17 +1,18 @@
 ---
 layout: page
-title: AddressBook Level-3
+title: PingBook
 ---
 
-[![CI Status](https://github.com/se-edu/addressbook-level3/workflows/Java%20CI/badge.svg)](https://github.com/se-edu/addressbook-level3/actions)
-[![codecov](https://codecov.io/gh/se-edu/addressbook-level3/branch/master/graph/badge.svg)](https://codecov.io/gh/se-edu/addressbook-level3)
+![Ui](images/PingBookUi.png)
 
-![Ui](images/Ui.png)
+**PingBook is a desktop application for managing your contacts quickly using typed commands.** While it has a GUI, most of the user interactions happen using a CLI (Command Line Interface).
 
-**AddressBook is a desktop application for managing your contact details.** While it has a GUI, most of the user interactions happen using a CLI (Command Line Interface).
+You can add, edit, search, organise, and archive contacts without ever touching the mouse. Starred contacts appear at the top of your list, archived contacts stay out of sight until you need them, and command aliases let you create shortcuts for the commands you use most.
 
-* If you are interested in using AddressBook, head over to the [_Quick Start_ section of the **User Guide**](UserGuide.html#quick-start).
-* If you are interested about developing AddressBook, the [**Developer Guide**](DeveloperGuide.html) is a good place to start.
+If you can type quickly, PingBook lets you manage hundreds of contacts faster than any click-based app.
+
+* If you are interested in using PingBook, head over to the [_Quick Start_ section of the **User Guide**](UserGuide.html#quick-start).
+* If you are interested in developing PingBook, the [**Developer Guide**](DeveloperGuide.html) is a good place to start.
 
 
 **Acknowledgements**
