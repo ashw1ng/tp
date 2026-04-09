@@ -158,6 +158,28 @@ public class MainAppTest {
         assertTrue(AliasCommand.getAliasRegistry().getAllAliases().isEmpty());
     }
 
+    // ================ helper factories ==============================
+
+    private static AliasStorage stubAliasStorage(Optional<Map<String, String>> readResult,
+            boolean throwOnSave) {
+        return new AliasStorage() {
+            @Override
+            public Path getAliasesFilePath() {
+                return null;
+            }
+            @Override
+            public Optional<Map<String, String>> readAliases() {
+                return readResult;
+            }
+            @Override
+            public void saveAliases(Map<String, String> a) throws IOException {
+                if (throwOnSave) {
+                    throw new IOException("save error");
+                }
+            }
+        };
+    }
+
     // ================ StubStorage inner class ==============================
 
     /**

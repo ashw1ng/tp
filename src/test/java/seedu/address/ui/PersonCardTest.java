@@ -52,6 +52,7 @@ public class PersonCardTest {
         Throwable throwable = startupThrowable.get();
         assumeTrue(throwable == null, () ->
             "Skipping PersonCardTest because JavaFX is unavailable: " + throwable.getClass().getSimpleName());
+        Platform.setImplicitExit(false);
     }
 
     private static boolean isHeadlessLinux() {
