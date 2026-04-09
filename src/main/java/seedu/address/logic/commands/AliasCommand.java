@@ -1,9 +1,9 @@
 package seedu.address.logic.commands;
 
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AliasRegistry;
 import seedu.address.model.Model;
@@ -33,9 +33,9 @@ public class AliasCommand extends Command {
      * Creates an {@code AliasCommand} for the given action.
      */
     public AliasCommand(String action, String alias, String command) {
-        this.action = normalize(action);
-        this.alias = normalize(alias);
-        this.command = normalize(command);
+        this.action = StringUtil.normalize(action);
+        this.alias = StringUtil.normalize(alias);
+        this.command = StringUtil.normalize(command);
     }
 
     private static Set<String> buildReservedCommandWords() {
@@ -62,10 +62,6 @@ public class AliasCommand extends Command {
     /** Returns the shared alias registry used by the application. */
     public static AliasRegistry getAliasRegistry() {
         return aliasRegistry;
-    }
-
-    private static String normalize(String value) {
-        return value == null ? null : value.trim().toLowerCase(Locale.ROOT);
     }
 
     @Override

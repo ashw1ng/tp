@@ -157,6 +157,11 @@ public class JsonPingBookStorage implements AddressBookStorage, AliasStorage {
     private Optional<ReadOnlyAddressBook> readAddressBookFromBackup(Path primaryPath,
             DataLoadingException primaryException) throws DataLoadingException {
         Path backupPath = getBackupPath(primaryPath);
+        if (backupPath == null) {
+            logger.warning("Cannot derive backupPath for primaryPath " + primaryPath
+                    + " while recovering PingBook contacts; rethrowing the original load failure.");
+            throw primaryException;
+        }
         if (isBackupPath(primaryPath) || !Files.exists(backupPath)) {
             throw primaryException;
         }
@@ -182,6 +187,11 @@ public class JsonPingBookStorage implements AddressBookStorage, AliasStorage {
     private Optional<Map<String, String>> readAliasesFromBackup(Path primaryPath,
             DataLoadingException primaryException) throws DataLoadingException {
         Path backupPath = getBackupPath(primaryPath);
+        if (backupPath == null) {
+            logger.warning("Cannot derive backupPath for primaryPath " + primaryPath
+                    + " while recovering PingBook aliases; rethrowing the original load failure.");
+            throw primaryException;
+        }
         if (isBackupPath(primaryPath) || !Files.exists(backupPath)) {
             throw primaryException;
         }
@@ -205,11 +215,16 @@ public class JsonPingBookStorage implements AddressBookStorage, AliasStorage {
     }
 
     private Path getBackupPath(Path path) {
-        return path.resolveSibling(path.getFileName().toString() + ".bak");
+        Path fileName = path.getFileName();
+        if (fileName == null) {
+            return null;
+        }
+        return path.resolveSibling(fileName.toString() + ".bak");
     }
 
     private boolean isBackupPath(Path path) {
-        return path.getFileName().toString().endsWith(".bak");
+        Path fileName = path.getFileName();
+        return fileName != null && fileName.toString().endsWith(".bak");
     }
 
 }

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_PERSONS;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BENSON;
@@ -112,6 +113,7 @@ public class ModelManagerTest {
         modelManager = new ModelManager(addressBook, userPrefs);
         ModelManager modelManagerCopy = new ModelManager(addressBook, userPrefs);
         assertTrue(modelManager.equals(modelManagerCopy));
+        assertEquals(modelManager.hashCode(), modelManagerCopy.hashCode());
 
         // same object -> returns true
         assertTrue(modelManager.equals(modelManager));
@@ -132,6 +134,11 @@ public class ModelManagerTest {
 
         // resets modelManager to initial state for upcoming tests
         modelManager.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+
+        // different viewPredicate -> returns false
+        ModelManager archivedViewModel = new ModelManager(addressBook, userPrefs);
+        archivedViewModel.setViewPredicate(PREDICATE_SHOW_ARCHIVED_PERSONS);
+        assertFalse(modelManager.equals(archivedViewModel));
 
         // different userPrefs -> returns false
         UserPrefs differentUserPrefs = new UserPrefs();

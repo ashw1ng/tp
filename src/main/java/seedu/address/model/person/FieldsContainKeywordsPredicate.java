@@ -1,6 +1,7 @@
 package seedu.address.model.person;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -23,26 +24,26 @@ public class FieldsContainKeywordsPredicate implements Predicate<Person> {
     }
 
     private boolean containsIgnoreCase(Person person, String keyword) {
-        String lowerKeyword = keyword.toLowerCase();
+        String lowerKeyword = keyword.toLowerCase(Locale.ROOT);
 
-        if (person.getName().fullName.toLowerCase().contains(lowerKeyword)) {
+        if (person.getName().fullName.toLowerCase(Locale.ROOT).contains(lowerKeyword)) {
             return true;
         }
-        if (person.getPhone().value.toLowerCase().contains(lowerKeyword)) {
+        if (person.getPhone().value.toLowerCase(Locale.ROOT).contains(lowerKeyword)) {
             return true;
         }
-        if (person.getEmail().value.toLowerCase().contains(lowerKeyword)) {
+        if (person.getEmail().value.toLowerCase(Locale.ROOT).contains(lowerKeyword)) {
             return true;
         }
-        if (person.hasAddress() && person.getAddress().value.toLowerCase().contains(lowerKeyword)) {
+        if (person.hasAddress() && person.getAddress().value.toLowerCase(Locale.ROOT).contains(lowerKeyword)) {
             return true;
         }
         if (person.getTags().stream()
-                .anyMatch(tag -> tag.tagName.toLowerCase().contains(lowerKeyword))) {
+                .anyMatch(tag -> tag.tagName.toLowerCase(Locale.ROOT).contains(lowerKeyword))) {
             return true;
         }
         if (!person.getRemark().value.isEmpty()
-                && person.getRemark().value.toLowerCase().contains(lowerKeyword)) {
+                && person.getRemark().value.toLowerCase(Locale.ROOT).contains(lowerKeyword)) {
             return true;
         }
         return false;

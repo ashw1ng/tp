@@ -47,7 +47,11 @@ public class Messages {
             builder.append("; Address: ").append(person.getAddress());
         }
         builder.append("; Tags: ");
-        builder.append(person.getTags().stream().map(Tag::toString).collect(Collectors.joining(" ")));
+        if (person.getTags().isEmpty()) {
+            builder.append("(none)");
+        } else {
+            builder.append(person.getTags().stream().map(Tag::toString).collect(Collectors.joining(" ")));
+        }
         return builder.toString();
     }
 

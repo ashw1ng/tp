@@ -95,7 +95,10 @@ public interface Model {
     Predicate<Person> getViewPredicate();
 
     /**
-     * Sets the current view predicate (active or archived).
+        * Sets the current view predicate (active or archived).
+        * This contract is enforced by {@link ModelManager#setViewPredicate(Predicate)}.
+        *
+        * @throws NullPointerException if {@code predicate} is null.
      */
     void setViewPredicate(Predicate<Person> predicate);
 

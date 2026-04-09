@@ -1,5 +1,6 @@
 package seedu.address.model.tag;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -40,6 +41,21 @@ public class TagTest {
         assertFalse(Tag.isValidTagName("tag_name"));
         assertFalse(Tag.isValidTagName("tag.name"));
         assertFalse(Tag.isValidTagName("tag@name"));
+    }
+
+    @Test
+    public void equalsHashCodeAndToString() {
+        Tag firstTag = new Tag("friend");
+        Tag firstTagCopy = new Tag("friend");
+        Tag secondTag = new Tag("colleague");
+
+        assertTrue(firstTag.equals(firstTag));
+        assertTrue(firstTag.equals(firstTagCopy));
+        assertFalse(firstTag.equals(secondTag));
+        assertFalse(firstTag.equals(1));
+        assertFalse(firstTag.equals(null));
+        assertEquals(firstTag.hashCode(), firstTagCopy.hashCode());
+        assertEquals("[friend]", firstTag.toString());
     }
 
 }

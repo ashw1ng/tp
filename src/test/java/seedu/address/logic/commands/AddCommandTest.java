@@ -197,6 +197,7 @@ public class AddCommandTest {
      */
     private class ModelStubAcceptingPersonAdded extends ModelStub {
         final ArrayList<Person> personsAdded = new ArrayList<>();
+        private Predicate<Person> viewPredicate = Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 
         @Override
         public boolean hasPerson(Person person) {
@@ -219,7 +220,12 @@ public class AddCommandTest {
 
         @Override
         public void setViewPredicate(Predicate<Person> predicate) {
-            // no-op for stub
+            viewPredicate = predicate;
+        }
+
+        @Override
+        public Predicate<Person> getViewPredicate() {
+            return viewPredicate;
         }
 
         @Override

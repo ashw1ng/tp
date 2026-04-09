@@ -15,8 +15,10 @@ public class Name {
                     + " end of the name";
 
     /*
-     * The first character of the name must not be a whitespace,
-     * otherwise " " (a blank string) becomes a valid input.
+     * Names must start with a letter or digit (\p{L} or \p{N}).
+     * The regex then permits internal hyphens, apostrophes, and dots, while preventing
+     * consecutive punctuation and punctuation at the end of the name.
+     * Trailing spaces are permitted here because ParserUtil.parseName trims inputs before validation.
      */
     public static final String VALIDATION_REGEX = "[\\p{L}\\p{N}]+(?:[\\-'][\\p{L}\\p{N}]+|\\.[\\p{L}\\p{N}]+"
             + "|\\.(?=\\s))*(?: [\\p{L}\\p{N}]+(?:[\\-'][\\p{L}\\p{N}]+|\\.[\\p{L}\\p{N}]+"

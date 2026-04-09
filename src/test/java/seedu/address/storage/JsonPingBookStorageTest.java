@@ -105,6 +105,11 @@ public class JsonPingBookStorageTest {
         assertEquals(backupAddressBook, new AddressBook(recoveredAddressBook));
     }
 
+    @Test
+    public void readAddressBook_rootPathWithoutFileName_throwsDataLoadingExceptionInsteadOfNpe() {
+        assertThrows(DataLoadingException.class, () -> storageAt(Path.of("/")).readAddressBook());
+    }
+
     // ===================== saveAddressBook =====================
 
     @Test

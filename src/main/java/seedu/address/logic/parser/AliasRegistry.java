@@ -2,9 +2,10 @@ package seedu.address.logic.parser;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import seedu.address.commons.util.StringUtil;
 
 /**
  * Registry for command aliases.
@@ -76,8 +77,8 @@ public class AliasRegistry {
      * Adds an alias mapping. Returns true if successful, false if conflict or invalid input.
      */
     public boolean addAlias(String alias, String commandWord, Set<String> reservedWords) {
-        String normalizedAlias = normalize(alias);
-        String normalizedCommandWord = normalize(commandWord);
+        String normalizedAlias = StringUtil.normalize(alias);
+        String normalizedCommandWord = StringUtil.normalize(commandWord);
         if (normalizedAlias == null || normalizedAlias.isBlank()
                 || normalizedCommandWord == null || normalizedCommandWord.isBlank()) {
             return false;
@@ -102,14 +103,14 @@ public class AliasRegistry {
      * Removes an alias. Returns true if removed, false if not found.
      */
     public boolean removeAlias(String alias) {
-        return aliasMap.remove(normalize(alias)) != null;
+        return aliasMap.remove(StringUtil.normalize(alias)) != null;
     }
 
     /**
      * Gets the command word for an alias, or null if not found.
      */
     public String getCommandWord(String alias) {
-        return aliasMap.get(normalize(alias));
+        return aliasMap.get(StringUtil.normalize(alias));
     }
 
     /**
@@ -136,7 +137,7 @@ public class AliasRegistry {
         aliases.forEach((alias, command) -> {
             String rejectionReason = getRejectionReason(alias, command, reserved);
             if (rejectionReason == null) {
-                aliasMap.put(normalize(alias), normalize(command));
+                aliasMap.put(StringUtil.normalize(alias), StringUtil.normalize(command));
             } else {
                 rejectedEntries.add(new RejectedAliasEntry(alias, command, rejectionReason));
             }
@@ -149,14 +150,14 @@ public class AliasRegistry {
         if (alias == null) {
             return "alias is null";
         }
-        String normalizedAlias = normalize(alias);
+        String normalizedAlias = StringUtil.normalize(alias);
         if (normalizedAlias.isBlank()) {
             return "alias is blank";
         }
         if (commandWord == null) {
             return "command word is null";
         }
-        String normalizedCommandWord = normalize(commandWord);
+        String normalizedCommandWord = StringUtil.normalize(commandWord);
         if (normalizedCommandWord.isBlank()) {
             return "command word is blank";
         }
@@ -170,9 +171,5 @@ public class AliasRegistry {
             return "alias duplicates another entry";
         }
         return null;
-    }
-
-    private String normalize(String value) {
-        return value == null ? null : value.trim().toLowerCase(Locale.ROOT);
     }
 }

@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
@@ -198,8 +199,11 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_mixedCaseBuiltInCommand_success() throws Exception {
-        assertTrue(parser.parseCommand("LiSt") instanceof ListCommand);
-        assertTrue(parser.parseCommand("LiStArChIvEd") instanceof ListCommand);
+        ListCommand activeListCommand = (ListCommand) parser.parseCommand("LiSt");
+        ListCommand archivedListCommand = (ListCommand) parser.parseCommand("LiStArChIvEd");
+
+        assertFalse(activeListCommand.isShowArchived());
+        assertTrue(archivedListCommand.isShowArchived());
     }
 
     @Test
