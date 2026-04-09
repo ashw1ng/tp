@@ -267,7 +267,7 @@ The PingBook window opens with a set of sample contacts already loaded. You shou
 
 ### UI Overview
 
-![Screenshot of app](images/PingBookUi.png)
+![Screenshot of app](images/LabelledUi.png.png)
 
 The PingBook window (the user interface, or UI, meaning all the visual elements you interact with) contains four areas:
 
