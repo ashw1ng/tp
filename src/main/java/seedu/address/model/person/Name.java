@@ -11,18 +11,17 @@ public class Name {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Names should only contain letters, digits, spaces, hyphens, apostrophes, and periods,"
-                    + " must start with a letter or digit, and punctuation cannot appear consecutively or at the"
-                + " end of the name. Multiple spaces are not allowed";
+                + " must start with a letter or digit, and punctuation cannot appear consecutively."
+                + " Periods may appear at the end of a token, such as in Jr.";
 
     /*
      * Names must start with a letter or digit (\p{L} or \p{N}).
-     * The regex then permits internal hyphens, apostrophes, and dots, while preventing
-     * consecutive punctuation and punctuation at the end of the name.
+         * The regex then permits internal hyphens, apostrophes, and dots, while preventing
+         * consecutive punctuation. Periods may appear at the end of a token.
      * Trailing spaces are permitted here because ParserUtil.parseName trims inputs before validation.
      */
-    public static final String VALIDATION_REGEX = "[\\p{L}\\p{N}]+(?:[\\-'][\\p{L}\\p{N}]+|\\.[\\p{L}\\p{N}]+"
-            + "|\\.(?=\\s))*(?: [\\p{L}\\p{N}]+(?:[\\-'][\\p{L}\\p{N}]+|\\.[\\p{L}\\p{N}]+"
-            + "|\\.(?=\\s))*)* *";
+        public static final String VALIDATION_REGEX = "[\\p{L}\\p{N}]+(?:[\\-'][\\p{L}\\p{N}]+|\\.[\\p{L}\\p{N}]+)*\\.?"
+            + "(?: [\\p{L}\\p{N}]+(?:[\\-'][\\p{L}\\p{N}]+|\\.[\\p{L}\\p{N}]+)*\\.?)* *";
 
     public final String fullName;
 
