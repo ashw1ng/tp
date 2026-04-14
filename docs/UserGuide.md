@@ -430,7 +430,7 @@ Each prefix (`n/`, `p/`, `e/`, etc.) tells PingBook what type of information fol
 
 | Field | Required? | Rules |
 |---|---|---|
-| `n/NAME` | Yes | Letters (including accented characters), digits, spaces, hyphens, apostrophes, and periods allowed (e.g. `Anne-Marie`, `O'Brien`, `Dr. Lee`). Must start with a letter or digit, and punctuation cannot appear consecutively or at the end of the name. |
+| `n/NAME` | Yes | Letters (including accented characters), digits, spaces, hyphens, apostrophes, and periods allowed (e.g. `Anne-Marie`, `O'Brien`, `Dr. Lee`, `David Jr.`). Must start with a letter or digit, punctuation cannot appear consecutively, and a period may appear at the end of a token (such as `Jr.`). |
 | `p/PHONE` | Yes | Must contain 3 to 15 digits. You may include spaces, `+`, hyphens, parentheses, and annotation letters (e.g. `+65 9123 4567`, `91234567 (Telegram)`). PingBook stores the phone value as entered. |
 | `e/EMAIL` | Yes | Must follow `localpart@domain` (e.g. `alex@email.com`). The domain must contain period-separated labels (at least one `.`), each label may contain letters/digits and internal hyphens only, and the final label must be at least 2 characters (so `a@localhost` and `doc@doc` are invalid). |
 | `a/ADDRESS` | No | Any text, but **extends only until the next prefix is encountered** (e.g. in `a/Block 1 t/friend`, the address is `Block 1` and `t/friend` starts a new tag field). If you need address text that looks like a prefix (e.g. `p/o Box`), use the `edit` command instead to add/modify the address. |
